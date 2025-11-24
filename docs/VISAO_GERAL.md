@@ -1,4 +1,4 @@
-# 🤖 Bot HLTV - Discord Notificações CS2
+# 🤖 BOT Jeff - Discord Notificações CS2
 
 ## 📖 Visão Geral do Projeto
 
@@ -46,7 +46,7 @@ Com sistema de times favoritos para notificações personalizadas.
 - `/resultados` - Resultados recentes
 - `/ajuda` - Documentação completa de comandos
 - `/sobre` - Informações sobre o bot
-# 🤖 Bot HLTV — Visão Geral (resumida)
+# 🤖 BOT Jeff — Visão Geral (resumida)
 
 Bot para notificações de partidas de CS2 no Discord. Foco em confiabilidade, baixa latência para notificações e configuração por servidor.
 

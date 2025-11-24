@@ -1,5 +1,5 @@
 """
-Bot HLTV - Discord Bot para notificações de partidas de CS2
+BOT Jeff - Discord Bot para notificações de partidas de CS2
 Arquivo principal de inicialização (usando Nextcord)
 """
 
@@ -53,8 +53,8 @@ if not TESTING_GUILD_ID:
     logger.warning("⚠️  TESTING_GUILD_ID não configurado - comandos levam até 1h para aparecer!")
 
 
-class HLTVBot(commands.Bot):
-    """Bot principal do HLTV."""
+class JeffBot(commands.Bot):
+    """Bot principal Jeff."""
     
     def __init__(self):
         # Configurar intents
@@ -84,7 +84,7 @@ class HLTVBot(commands.Bot):
         # Inicializar agendador de cache com notification manager
         self.cache_scheduler = CacheScheduler(self.api_client, self.cache_manager, self.notification_manager)
         
-        logger.info("🤖 Bot HLTV inicializado")
+        logger.info("🤖 BOT Jeff inicializado")
         if default_guild_ids:
             logger.info(f"🎯 Comandos registrados para guild ID: {TESTING_GUILD_ID}")
         
@@ -196,7 +196,7 @@ class HLTVBot(commands.Bot):
 def main():
     """Função principal para iniciar o bot."""
     try:
-        bot = HLTVBot()
+        bot = JeffBot()
         
         logger.info("🚀 Iniciando bot...")
         bot.run(DISCORD_TOKEN)

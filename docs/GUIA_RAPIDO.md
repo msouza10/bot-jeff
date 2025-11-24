@@ -1,4 +1,4 @@
-# 🎮 Bot HLTV - Guia Rápido
+# 🎮 BOT Jeff - Guia Rápido
 
 Bot Discord para notificações de partidas de CS2 usando **Nextcord** e **PandaScore API**.
 

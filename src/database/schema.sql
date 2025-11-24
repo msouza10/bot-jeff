@@ -1,4 +1,4 @@
--- Schema do banco de dados para o Bot HLTV
+-- Schema do banco de dados para o BOT Jeff
 -- SQLite Database Schema
 
 -- Tabela de cache de partidas

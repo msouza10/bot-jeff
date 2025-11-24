@@ -1,4 +1,4 @@
-# 🔧 Especificação Técnica — Bot HLTV (Python / Pycord)
+# 🔧 Especificação Técnica — BOT Jeff (Python / Pycord)
 
 Versão focada no stack Python (Pycord, aiohttp, APScheduler, aiosqlite). Este documento resume contratos, modelos de dados, schema de banco, fluxos de notificação e exemplos mínimos de implementação.
 
@@ -1278,4 +1278,4 @@ def setup_logging():
 
 **Versão do Documento**: 2.0 (Python/Pycord)  
 **Última Atualização**: 15 de novembro de 2025  
-**Autor**: Projeto Bot HLTV
+**Autor**: Projeto BOT Jeff

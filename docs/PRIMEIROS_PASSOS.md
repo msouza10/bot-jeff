@@ -1,4 +1,4 @@
-# 🚀 Primeiros Passos - Bot HLTV CS2
+# 🚀 Primeiros Passos - BOT Jeff CS2
 
 Guia prático para começar o desenvolvimento do bot usando Python e Pycord.
 
@@ -48,7 +48,7 @@ git --version
 
 1. Acesse o [Discord Developer Portal](https://discord.com/developers/applications)
 2. Clique em "New Application"
-3. Dê um nome ao seu bot (ex: "Bot HLTV CS2")
+3. Dê um nome ao seu bot (ex: "BOT Jeff CS2")
 4. Clique em "Create"
 
 #### Configurar Bot:

@@ -108,7 +108,7 @@ class NotificationsCog(commands.Cog):
                     inline=False
                 )
             
-            embed.set_footer(text="Bot HLTV - Notificações de Partidas")
+            embed.set_footer(text="BOT Jeff - Notificações de Partidas")
             
             await interaction.response.send_message(embed=embed, ephemeral=True)
             
@@ -188,7 +188,7 @@ class NotificationsCog(commands.Cog):
                 inline=False
             )
             
-            embed.set_footer(text="Bot HLTV - Notificações de Partidas")
+            embed.set_footer(text="BOT Jeff - Notificações de Partidas")
             
             await interaction.response.send_message(embed=embed, ephemeral=True)
             
@@ -204,7 +204,7 @@ class NotificationsCog(commands.Cog):
                     value="• Lembretes 1 hora antes da partida\n• Lembretes 30 minutos antes\n• Lembretes 15 minutos antes\n• Lembretes 5 minutos antes\n• Notificação quando a partida inicia",
                     inline=False
                 )
-                embed_test.set_footer(text="Bot HLTV - Notificações de Partidas")
+                embed_test.set_footer(text="BOT Jeff - Notificações de Partidas")
                 
                 await canal.send(embed=embed_test)
             except Exception as e:
@@ -293,7 +293,7 @@ class NotificationsCog(commands.Cog):
                 inline=False
             )
             
-            embed.set_footer(text="Bot HLTV - Notificações de Partidas")
+            embed.set_footer(text="BOT Jeff - Notificações de Partidas")
             
             await interaction.response.send_message(embed=embed, ephemeral=True)
             
@@ -414,7 +414,7 @@ class NotificationsCog(commands.Cog):
                 inline=False
             )
             
-            embed.set_footer(text="Bot HLTV - Timezone Info")
+            embed.set_footer(text="BOT Jeff - Timezone Info")
             
             await interaction.response.send_message(embed=embed, ephemeral=True)
             
@@ -563,7 +563,7 @@ class NotificationsCog(commands.Cog):
                 inline=False
             )
             
-            embed.set_footer(text="Bot HLTV - Timezone Configuration")
+            embed.set_footer(text="BOT Jeff - Timezone Configuration")
             
             await interaction.response.send_message(embed=embed, ephemeral=True)
             

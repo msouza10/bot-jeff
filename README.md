@@ -1,4 +1,4 @@
-## 🎮 Bot HLTV — Notificações CS2 (Python / Nextcord)
+## 🎮 BOT Jeff — Notificações CS2 (Python / Nextcord)
 
 Bot de Discord para enviar notificações automáticas de partidas de Counter-Strike 2 (CS2) usando a PandaScore API. Esta versão está alinhada ao stack Python/Nextcord e ao roadmap definido nos arquivos `plan/` e `docs/`.
 
@@ -29,7 +29,7 @@ Bot de Discord para enviar notificações automáticas de partidas de Counter-St
 ## 📁 Estrutura do Projeto
 
 ```
-bot-hltv/
+bot-jeff/
 ├── src/                      # ⭐ Código fonte principal (necessário para rodar bot)
 │   ├── bot.py               # Entrada principal
 │   ├── cogs/                # Comandos Discord (/partidas, /aovivo, /resultados)
@@ -77,7 +77,7 @@ bot-hltv/
 ```bash
 # Clonar repo
 git clone <repo-url>
-cd bot-hltv
+cd bot-jeff
 
 # Criar virtual env
 python -m venv venv
@@ -444,7 +444,7 @@ python -m src.bot
 ## Estrutura do projeto (resumo)
 
 ```
-bot-hltv/
+bot-jeff/
 ├── docs/              # Documentação do projeto
 ├── plan/              # Planejamento e TODOs
 ├── src/               # Código fonte Python

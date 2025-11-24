@@ -1,4 +1,4 @@
-# 📊 Arquitetura de Cache - Bot HLTV
+# 📊 Arquitetura de Cache - BOT Jeff
 
 ## Visão Geral
 

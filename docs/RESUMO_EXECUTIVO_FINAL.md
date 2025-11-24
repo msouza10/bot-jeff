@@ -6,7 +6,7 @@
 ╔════════════════════════════════════════════╗
 ║    IMPLEMENTAÇÃO CONCLUÍDA COM SUCESSO    ║
 ║  Sistema de Notificações de Resultados    ║
-║         Bot HLTV - CS2 Matchups          ║
+║         BOT Jeff - CS2 Matchups          ║
 ╚════════════════════════════════════════════╝
 ```
 
@@ -239,5 +239,5 @@ Experência do usuário: ⭐⭐⭐⭐⭐
 **Implementação Finalizada: 16/11/2025** ✅
 
 **Desenvolvido por:** GitHub Copilot  
-**Para:** Bot HLTV - Discord CS2 Notifications  
+**Para:** BOT Jeff - Discord CS2 Notifications  
 **Status:** Production Ready 🚀

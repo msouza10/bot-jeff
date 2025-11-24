@@ -1,11 +1,11 @@
-# 🚀 Setup do Bot HLTV
+# 🚀 Setup do BOT Jeff
 
 ## Instalação Rápida
 
 ### 1. Clone o repositório
 ```bash
 git clone <seu-repo>
-cd bot-hltv
+cd bot-jeff
 ```
 
 ### 2. Crie um ambiente virtual
@@ -43,7 +43,7 @@ python -m src.bot
 ## 📊 Estrutura do Projeto
 
 ```
-bot-hltv/
+bot-jeff/
 ├── src/
 │   ├── bot.py                    # Bot principal
 │   ├── cogs/
@@ -127,4 +127,4 @@ python -m src.database.debug_cache
 ```
 
 ---
-**Desenvolvido com ❤️ para CS2 HLTV**
+**Desenvolvido com ❤️ para CS2**

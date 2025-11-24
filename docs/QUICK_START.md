@@ -1,4 +1,4 @@
-# 🚀 Quick Start Guide - Bot HLTV
+# 🚀 Quick Start Guide - BOT Jeff
 
 Guia rápido para começar o desenvolvimento do bot.
 

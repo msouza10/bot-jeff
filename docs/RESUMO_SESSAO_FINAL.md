@@ -1,4 +1,4 @@
-# RESUMO FINAL - Bot HLTV
+# RESUMO FINAL - BOT Jeff
 
 ## 🎯 CONCLUSÃO DA SESSÃO
 

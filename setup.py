@@ -34,7 +34,7 @@ def check_env_file():
 def main():
     """Função principal."""
     print("=" * 60)
-    print("🚀 Bot HLTV - Script de Inicialização")
+    print("🚀 BOT Jeff - Script de Inicialização")
     print("=" * 60)
     print()
     

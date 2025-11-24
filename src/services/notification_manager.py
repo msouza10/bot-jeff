@@ -428,7 +428,7 @@ class NotificationManager:
         except Exception as e:
             logger.debug(f"Erro ao adicionar streams ao lembrete: {e}")
         
-        embed.set_footer(text="Bot HLTV - Notificações de Partidas")
+        embed.set_footer(text="BOT Jeff - Notificações de Partidas")
         
         return embed
     

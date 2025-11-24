@@ -1,5 +1,5 @@
 """
-🕐 Gerenciador de Timezone para Bot HLTV
+🕐 Gerenciador de Timezone para BOT Jeff
 
 Estratégia:
 1. Todos os dados no banco estão em UTC (não mudam)

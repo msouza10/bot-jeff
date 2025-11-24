@@ -2,7 +2,7 @@
 
 ## ✅ Resumo Executivo
 
-Implementamos com sucesso o **sistema de notificações de RESULTADOS** para o Bot HLTV. Agora o bot notifica os usuários não apenas quando as partidas começam, mas também quando **terminam com o resultado final**.
+Implementamos com sucesso o **sistema de notificações de RESULTADOS** para o BOT Jeff. Agora o bot notifica os usuários não apenas quando as partidas começam, mas também quando **terminam com o resultado final**.
 
 ---
 

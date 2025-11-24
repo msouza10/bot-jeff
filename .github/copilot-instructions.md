@@ -1,4 +1,4 @@
-# AI Agent Instructions for bot-hltv
+# AI Agent Instructions for bot-jeff
 
 **Project**: Discord bot for CS2 (Counter-Strike 2) match notifications with live stream detection via PandaScore API  
 **Stack**: Python 3.10+, Nextcord, libSQL (Turso), APScheduler, Twitch/YouTube APIs  
@@ -577,7 +577,7 @@ class LiquipediaService:
     
     def __init__(self, api_key: str):
         self.headers = {
-            "User-Agent": "bot-hltv/1.0 (Discord; github.com/msouza10/bot-hltv)",
+            "User-Agent": "bot-jeff/1.0 (Discord; github.com/msouza10/bot-jeff)",
             "Accept-Encoding": "gzip",
             "Authorization": f"Apikey {api_key}"
         }

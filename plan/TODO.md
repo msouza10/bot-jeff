@@ -1,4 +1,4 @@
-# Progresso do Bot HLTV - Status Atualizado (17/11/2025 - SESSÃO FINAL)
+# Progresso do BOT Jeff - Status Atualizado (17/11/2025 - SESSÃO FINAL)
 
 > **IMPORTANTE**: Esta é a sessão final de desenvolvimento! Veja o resumo no final do arquivo.
 

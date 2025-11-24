@@ -1,4 +1,4 @@
-# 🕐 Estratégia de Timezone para Bot HLTV
+# 🕐 Estratégia de Timezone para BOT Jeff
 
 **Data**: Novembro 18, 2025  
 **Status**: Em Implementação  
