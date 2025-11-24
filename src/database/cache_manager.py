@@ -149,7 +149,8 @@ class MatchCacheManager:
         self,
         status: Optional[str] = None,
         hours: int = 24,
-        limit: int = 100
+        limit: int = 100,
+        team_name: Optional[str] = None
     ) -> List[Dict]:
         """
         Obtém partidas do cache.
@@ -158,6 +159,7 @@ class MatchCacheManager:
             status: Filtrar por status (not_started, running, finished, ou 'results' para finished+canceled+postponed)
             hours: Últimas X horas
             limit: Limite de resultados
+            team_name: Filtrar por nome do time (busca textual no JSON)
             
         Returns:
             Lista de partidas
@@ -166,44 +168,36 @@ class MatchCacheManager:
             client = await self.get_client()
             
             cutoff = (datetime.now() - timedelta(hours=hours)).isoformat()
+            params = []
+            
+            query_parts = ["SELECT match_data FROM matches_cache WHERE updated_at >= ?"]
+            params.append(cutoff)
             
             if status == "results":
-                # Para /resultados: incluir finished, canceled, postponed
-                # Usar COALESCE(begin_at, updated_at) porque begin_at é NULL para finished
-                query = await asyncio.wait_for(
-                    client.execute("""
-                        SELECT match_data
-                        FROM matches_cache
-                        WHERE status IN ('finished', 'canceled', 'postponed')
-                          AND updated_at >= ?
-                        ORDER BY COALESCE(begin_at, updated_at) DESC
-                        LIMIT ?
-                    """, [cutoff, limit]),
-                    timeout=self.QUERY_TIMEOUT
-                )
+                query_parts.append("AND status IN ('finished', 'canceled', 'postponed')")
             elif status:
-                query = await asyncio.wait_for(
-                    client.execute("""
-                        SELECT match_data
-                        FROM matches_cache
-                        WHERE status = ?
-                          AND updated_at >= ?
-                        ORDER BY begin_at ASC
-                        LIMIT ?
-                    """, [status, cutoff, limit]),
-                    timeout=self.QUERY_TIMEOUT
-                )
+                query_parts.append("AND status = ?")
+                params.append(status)
+                
+            if team_name:
+                # Busca textual simples no JSON (case insensitive via LIKE)
+                query_parts.append("AND match_data LIKE ?")
+                params.append(f"%{team_name}%")
+            
+            if status == "results":
+                query_parts.append("ORDER BY COALESCE(begin_at, updated_at) DESC")
             else:
-                query = await asyncio.wait_for(
-                    client.execute("""
-                        SELECT match_data
-                        FROM matches_cache
-                        WHERE updated_at >= ?
-                        ORDER BY begin_at ASC
-                        LIMIT ?
-                    """, [cutoff, limit]),
-                    timeout=self.QUERY_TIMEOUT
-                )
+                query_parts.append("ORDER BY begin_at ASC")
+                
+            query_parts.append("LIMIT ?")
+            params.append(limit)
+            
+            query_sql = " ".join(query_parts)
+            
+            query = await asyncio.wait_for(
+                client.execute(query_sql, params),
+                timeout=self.QUERY_TIMEOUT
+            )
             
             matches = [json.loads(row["match_data"]) for row in query.rows]
             return matches
@@ -230,14 +224,31 @@ class MatchCacheManager:
             
             cutoff = (datetime.now() - timedelta(hours=hours)).isoformat()
             
-            result = await client.execute("""
+            # 1. Remover finished antigas
+            result_finished = await client.execute("""
                 DELETE FROM matches_cache
                 WHERE status = 'finished'
                   AND (end_at < ? OR updated_at < ?)
                 RETURNING match_id
             """, [cutoff, cutoff])
             
-            deleted = len(result.rows)
+            deleted = len(result_finished.rows)
+            
+            # 2. Remover not_started "zumbis" (agendadas para > 24h atrás e nunca começaram/atualizaram)
+            # Isso acontece se a partida foi cancelada/deletada na API e o cache não soube
+            result_zombies = await client.execute("""
+                DELETE FROM matches_cache
+                WHERE status = 'not_started'
+                  AND begin_at < ?
+                RETURNING match_id
+            """, [cutoff])
+            
+            deleted_zombies = len(result_zombies.rows)
+            
+            if deleted_zombies > 0:
+                logger.warning(f"🧟 Removidas {deleted_zombies} partidas zumbis (not_started antigas)")
+                deleted += deleted_zombies
+            
             return deleted
             
         except Exception as e:
@@ -359,13 +370,19 @@ class MatchCacheManager:
         except Exception as e:
             logger.error(f"✗ Erro ao atualizar cache em memória: {e}")
     
-    async def get_cached_matches_fast(self, status: str, limit: int = 50) -> List[Dict]:
+    async def get_cached_matches_fast(
+        self, 
+        status: str, 
+        limit: int = 50,
+        team_name: Optional[str] = None
+    ) -> List[Dict]:
         """
         Obtém partidas do cache em memória (muito rápido!).
         
         Args:
             status: 'upcoming', 'running', ou 'finished'
             limit: Limite de resultados
+            team_name: Filtrar por nome do time
             
         Returns:
             Lista de partidas (pode estar vazia se nunca foi atualizado)
@@ -376,6 +393,27 @@ class MatchCacheManager:
             status = "upcoming"
         
         matches = _memory_cache.get(status) or []
+        
+        if team_name:
+            team_name_lower = team_name.lower()
+            filtered_matches = []
+            for match in matches:
+                # Verificar nos oponentes
+                found = False
+                for opponent in match.get("opponents", []):
+                    opp_name = opponent.get("opponent", {}).get("name", "").lower()
+                    if team_name_lower in opp_name:
+                        found = True
+                        break
+                
+                # Verificar no nome da partida (ex: "Furia vs MIBR")
+                if not found and team_name_lower in match.get("name", "").lower():
+                    found = True
+                    
+                if found:
+                    filtered_matches.append(match)
+            matches = filtered_matches
+            
         return matches[:limit]
     
     async def cache_streams(self, match_id: int, streams_list: List[Dict], source: str = "pandascore") -> bool:

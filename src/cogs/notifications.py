@@ -16,11 +16,13 @@ class NotificationsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @nextcord.slash_command(
-        name="notificacoes",
-        description="Ativa/desativa notificações de partidas no servidor"
-    )
-    async def notificacoes(
+    @nextcord.slash_command(name="notificacoes", description="Configura notificações de partidas")
+    async def notificacoes(self, interaction: nextcord.Interaction):
+        """Comando principal de notificações (grupo)."""
+        pass
+
+    @notificacoes.subcommand(name="ativar", description="Ativa/desativa notificações de partidas no servidor")
+    async def ativar(
         self,
         interaction: nextcord.Interaction,
         ativar: bool = SlashOption(
@@ -102,7 +104,7 @@ class NotificationsCog(commands.Cog):
                 
                 embed.add_field(
                     name="⚠️ Aviso",
-                    value="Configure o canal de notificações com `/canal-notificacoes` antes de ativar!",
+                    value="Configure o canal de notificações com `/notificacoes canal` antes de ativar!",
                     inline=False
                 )
             
@@ -121,11 +123,8 @@ class NotificationsCog(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
     
-    @nextcord.slash_command(
-        name="canal-notificacoes",
-        description="Define o canal onde as notificações serão enviadas"
-    )
-    async def canal_notificacoes(
+    @notificacoes.subcommand(name="canal", description="Define o canal onde as notificações serão enviadas")
+    async def canal(
         self,
         interaction: nextcord.Interaction,
         canal: nextcord.TextChannel = SlashOption(
@@ -222,11 +221,8 @@ class NotificationsCog(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
     
-    @nextcord.slash_command(
-        name="notificacoes-resultado",
-        description="Ativa/desativa notificações de RESULTADO de partidas"
-    )
-    async def notificacoes_resultado(
+    @notificacoes.subcommand(name="resultado", description="Ativa/desativa notificações de RESULTADO de partidas")
+    async def resultado(
         self,
         interaction: nextcord.Interaction,
         ativar: bool = SlashOption(
@@ -293,7 +289,7 @@ class NotificationsCog(commands.Cog):
             
             embed.add_field(
                 name="ℹ️ Informação",
-                value="Configure o canal com `/canal-notificacoes` para usar esta funcionalidade",
+                value="Configure o canal com `/notificacoes canal` para usar esta funcionalidade",
                 inline=False
             )
             
