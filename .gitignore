@@ -38,6 +38,9 @@ ENV/
 *.sqlite
 *.sqlite3
 
+# Liquipedia Samples
+*.json
+
 
 # Logs
 *.log

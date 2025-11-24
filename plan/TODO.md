@@ -622,14 +622,30 @@ Melhorias não-críticas identificadas:
 ### G. INTEGRAÇÕES EXTERNAS
 
 #### 23. Integração com Liquipedia
-- [ ] **Implementação**: Buscar informações extras em Liquipedia
-- **Descrição**: Stats, histórico, prêmios dos times
-- **Implementação**:
-  - API Liquipedia ou web scraping
-  - Adicionar ao embed de times
-- **Benefício**: Mais contexto sobre times/torneios
-- **Dificuldade**: ⭐⭐⭐ (Difícil)
-- **Prioridade**: 🟡 Média
+- [x] **Implementação**: ✅ **CONCLUÍDO (24/11/2025)** - Integração completa com API Liquipedia
+- **Descrição**: Buscar informações de jogadores e times na Liquipedia
+- **O que foi implementado**:
+  - ✅ `LiquipediaService` com rate limiting (60 req/h) e caching
+  - ✅ Banco de dados dedicado `liquipedia_cache.db` 
+  - ✅ Schema completo: tabelas `players` e `teams` com todos os campos da API
+  - ✅ Cache-first logic: verifica DB antes de fazer chamada à API
+  - ✅ Comandos Discord: `/jogador [nome]` e `/time [nome]`
+  - ✅ Embeds ricos com informações completas (nacionalidade, time, prize money, links sociais)
+  - ✅ Logs detalhados com emojis para rastreamento
+  - ✅ Headers obrigatórios: User-Agent customizado, Accept-Encoding gzip, Authorization
+  - ✅ Atribuição CC-BY-SA 3.0 nos embeds
+  - ✅ Script de teste: `scripts/fetch_liquipedia_samples.py`
+- **Arquivos criados/modificados**:
+  - `src/services/liquipedia_service.py`
+  - `src/database/liquipedia_schema.sql`
+  - `src/database/liquipedia_db.py`
+  - `src/cogs/liquipedia.py`
+  - `scripts/fetch_liquipedia_samples.py`
+  - `scripts/test_liquipedia_player.py`
+  - `scripts/test_liquipedia_team.py`
+- **Benefício**: ✅ Acesso completo a informações de jogadores e times do CS2
+- **Dificuldade**: ⭐⭐⭐ (Difícil) - COMPLETADO
+- **Prioridade**: 🟡 Média - ✅ FEITO
 
 #### 24. HLTV Stats Integration
 - [ ] **Implementação**: Dados de HLTV (stats de jogadores, etc)
@@ -833,6 +849,90 @@ Melhorias não-críticas identificadas:
 - **Benefício**: Saber se escala
 - **Dificuldade**: ⭐⭐⭐ (Difícil)
 - **Prioridade**: 🟡 Baixa
+
+---
+
+### M. INTEGRAÇÃO LIQUIPEDIA - MELHORIAS
+
+#### 43. Normalização de Busca de Jogadores
+- [ ] **Implementação**: Melhorar sistema de pesquisa de jogadores usando `alternateid`
+- **Descrição**: 
+  - Atualmente, busca é case-sensitive ("FalleN" vs "fallen")
+  - API fornece campo `alternateid` que pode conter variações do nome
+  - Implementar busca fuzzy que tenta múltiplas variações antes de retornar "não encontrado"
+- **Implementação Sugerida**:
+  1. Criar função `normalize_player_name()` em `liquipedia_service.py`
+  2. Tentar buscar por `id`, depois por `alternateid`, depois por `pagename`
+  3. Cache de aliases: salvar mapeamento de variações → ID principal
+  4. Adicionar sugestões "Você quis dizer X?" quando não encontrar
+- **Benefícios**:
+  - Usuários não precisam saber a capitalização exata
+  - Menos frustrações com "jogador não encontrado"
+  - Melhor UX com sugestões
+- **Dificuldade**: ⭐⭐ (Média)
+- **Prioridade**: 🔴 Alta
+
+#### 44. Adicionar Mais Links e IDs Sociais
+- [ ] **Implementação**: Expandir campos de links nos embeds de jogadores/times
+- **Descrição**:
+  - Atualmente mostra: Twitter, Twitch, Instagram
+  - API fornece mais campos no objeto `links`: `steam64id`, `faceit`, `gamerclub`, e outros
+  - Adicionar todos os links disponíveis aos embeds
+  - Incluir link para perfil na Liquipedia (formatado como `https://liquipedia.net/counterstrike/{pagename}`)
+- **Campos a Adicionar**:
+  - **Jogadores**:
+    - `steam64id` (link para Steam)
+    - `faceit` (link para FaceIt)
+    - `gamerclub` (link para Gamers Club)
+    - Link do perfil na Liquipedia (já incluído no embed.url)
+  - **Times**:
+    - Website oficial (`home`)
+    - YouTube, Facebook, Discord
+    - Links de patrocinadores se disponíveis
+- **Implementação Sugerida**:
+  1. Criar helper `format_social_links()` em `liquipedia.py`
+  2. Parsear todo o objeto `links` do JSON
+  3. Exibir ícones/emojis para cada rede (🎮 Steam, 🎯 FaceIt, etc)
+  4. Adicionar campo "🔗 Perfil Liquipedia" com link direto
+- **Benefícios**:
+  - Acesso rápido a todas as informações do jogador/time
+  - Usuários podem seguir em múltiplas plataformas
+  - Mais valor agregado ao comando
+- **Dificuldade**: ⭐ (Fácil)
+- **Prioridade**: 🟡 Média
+
+#### 45. Exibir Informações de Role e Metadata
+- [ ] **Implementação**: Mostrar role, status, e outros metadados importantes
+- **Descrição**:
+  - API fornece campo `extradata` com informações como `role`, `role2`
+  - Atualmente, apenas `role` e `role2` são mostrados se existirem
+  - Expandir para mostrar outros campos relevantes:
+    - **Status detalhado**: "Active", "Retired", "Inactive", "Banned"
+    - **Captain**: Mostrar se é capitão do time
+    - **Coach**: Diferenciar jogadores de coaches
+    - **Former teams**: Mostrar times anteriores (top 3)
+    - **Achievements**: Mostrar títulos/conquistas se disponível
+- **Campos Adicionais Sugeridos**:
+  - **Jogadores**:
+    - `type` (player, coach, analyst, etc)
+    - `deathdate` (se aposentado/falecido, mostrar com respeito)
+    - Former teams (histórico de times)
+  - **Times**:
+    - `createdate` e `disbanddate` (histórico)
+    - `status` (active, disbanded, inactive)
+    - Roster atual se a API fornecer
+- **Implementação Sugerida**:
+  1. Parsear todo o objeto `extradata`
+  2. Criar seção "📋 Informações Adicionais" no embed
+  3. Mostrar role com emoji apropriado (🎯 AWPer, 🔫 Entry Fragger, etc)
+  4. Adicionar ícone de capitão 👑 se aplicável
+  5. Formatação especial para status "Retired" ou "Banned"
+- **Benefícios**:
+  - Contexto completo sobre jogadores/times
+  - Entender melhor a função de cada jogador
+  - Respeitar jogadores aposentados/falecidos
+- **Dificuldade**: ⭐⭐ (Média)
+- **Prioridade**: 🟡 Média
 
 ---
 
