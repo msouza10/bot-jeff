@@ -91,8 +91,9 @@ class TemporalCacheManager:
             logger.debug(f"⚠️ Match {match.get('id')} sem data de referência")
             return True  # Se sem data, manter no cache
         
-        start_time, end_time = TemporalCacheManager.get_temporal_window()
-        return start_time <= anchor <= end_time
+        start_time, _ = TemporalCacheManager.get_temporal_window()
+        # Manter se for mais recente que o limite de corte (incluindo futuro)
+        return anchor >= start_time
 
 
 async def cleanup_expired_cache(client) -> Dict:
