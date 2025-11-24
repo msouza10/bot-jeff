@@ -73,6 +73,23 @@ def main():
         "Instalando dependências"
     ):
         sys.exit(1)
+
+    # Inicializar Bancos de Dados
+    print("📦 Inicializando Bancos de Dados...")
+    
+    # Banco Principal (bot.db)
+    if not run_command(
+        f"{python_cmd} -m src.database.build_db",
+        "Inicializando banco de dados principal (bot.db)"
+    ):
+        print("⚠️  Aviso: Falha ao inicializar bot.db (pode ser ignorado se já existir)")
+
+    # Banco Liquipedia (liquipedia_cache.db)
+    if not run_command(
+        f"{python_cmd} -m src.database.liquipedia_db",
+        "Inicializando cache Liquipedia (liquipedia_cache.db)"
+    ):
+        print("⚠️  Aviso: Falha ao inicializar liquipedia_cache.db")
     
     print("=" * 60)
     print("✅ Setup concluído com sucesso!")

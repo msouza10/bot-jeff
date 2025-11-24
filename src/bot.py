@@ -99,6 +99,7 @@ class JeffBot(commands.Bot):
             "src.cogs.ping",
             "src.cogs.matches",
             "src.cogs.notifications",
+            "src.cogs.liquipedia",
         ]
         
         for cog in cogs:

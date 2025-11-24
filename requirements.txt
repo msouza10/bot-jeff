@@ -4,8 +4,9 @@ nextcord>=2.6.0
 # HTTP Client
 aiohttp>=3.9.0
 
-# Database - libSQL (Turso)
+# Database - libSQL (Turso) & SQLite
 libsql-client>=0.3.0
+aiosqlite>=0.17.0
 
 # Environment Variables
 python-dotenv>=1.0.0
