@@ -37,10 +37,9 @@ ENV/
 *.db-wal
 *.sqlite
 *.sqlite3
-data/
+
 
 # Logs
-logs/
 *.log
 
 # IDE

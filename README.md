@@ -467,7 +467,27 @@ Contribuições muito bem-vindas. Use branches para features e abra PRs com desc
 
 ---
 
+## 📊 Fontes de Dados e Atribuições
+
+Este bot utiliza dados de múltiplas fontes para fornecer informações sobre partidas de Counter-Strike 2:
+
+### PandaScore API
+- **Fonte principal**: Dados de partidas, resultados, times e torneios
+- **Website**: [PandaScore.co](https://pandascore.co)
+- **Uso**: Sincronização automática de partidas (futuras, ao vivo e finalizadas)
+
+### Liquipedia
+- **Fonte complementar**: Informações adicionais sobre times, jogadores e torneios
+- **Website**: [Liquipedia Counter-Strike](https://liquipedia.net/counterstrike)
+- **Licença**: [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
+- **Atribuição**: Conteúdo utilizado da Liquipedia é licenciado sob Creative Commons Attribution-ShareAlike 3.0 Unported License
+
+> **Nota**: Ao usar dados da Liquipedia, cumprimos os termos de uso que exigem atribuição adequada. Para mais detalhes sobre a licença, consulte `liquipedia-doc/liquipedia-license.md`.
+
+---
+
 ## Licença
+
 
 MIT (a definir) — sugerido para projetos open-source.
 

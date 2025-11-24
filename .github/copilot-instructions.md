@@ -436,3 +436,197 @@ ENTREGA_FINAL.md                        # Delivery documentation (commit)
 | `src/cogs/matches.py` | Match query commands | `/partidas`, `/aovivo`, `/resultados` |
 | `src/database/schema.sql` | Database schema | 7 tables + indexes |
 | `src/utils/embeds.py` | Discord embeds & stream formatting | `create_match_embed()`, `augment_match_with_streams()`, `format_streams_field()` |
+
+---
+
+## 🔌 Liquipedia API Integration Rules
+
+> **Status**: Optional integration for additional CS2 data (teams, players, tournaments)
+> **Documentation**: See `liquipedia-doc/` for full API specs and terms
+
+### ⚠️ CRITICAL - Rate Limits (Violation = Ban)
+
+**LiquipediaDB API (REST v3):**
+- **Maximum: 60 requests per hour** (strict limit)
+- Requires API key: `Authorization: Apikey YOUR_KEY`
+
+**MediaWiki API:**
+- **General requests: 1 every 2 seconds** (max 30/min)
+- **`action=parse` requests: 1 every 30 seconds** (resource-intensive)
+
+### 🛡️ Required HTTP Headers
+
+```python
+headers = {
+    # MANDATORY: Custom User-Agent with contact info
+    "User-Agent": "bot-hltv/1.0 (Discord Bot; github.com/msouza10/bot-hltv; email@example.com)",
+    
+    # MANDATORY: Accept gzip encoding
+    "Accept-Encoding": "gzip",
+    
+    # For LiquipediaDB API:
+    "Authorization": "Apikey YOUR_API_KEY"
+}
+```
+
+> ❌ **Generic User-Agents (`Python-requests`, `Go-http-client`) WILL BE BLOCKED!**
+
+### 💾 Cache Requirements (Mandatory)
+
+**From Terms**: *"Re-use / cache your API results for as long as possible"*
+
+- Implement dual cache: Memory + Database (like PandaScore integration)
+- Recommended TTL:
+  - **Upcoming matches**: 5 minutes
+  - **Finished matches**: 1 hour
+  - **Teams/players**: 24 hours
+  - **Tournaments**: 24 hours
+
+### ⚖️ Attribution (CC-BY-SA 3.0)
+
+**MANDATORY**: Credit Liquipedia in Discord embeds when using their data
+
+```python
+# Add to embed footer
+embed.set_footer(text="Dados: Liquipedia (liquipedia.net/counterstrike)")
+```
+
+**License**: Content is CC-BY-SA 3.0 (derivative works must use same license)
+
+### 📡 REST API v3 Quick Reference
+
+**Base URL**: `https://api.liquipedia.net/api/v3`
+
+**Key Endpoints**:
+- `/match` - Match data (match2 table)
+- `/player` - Player information
+- `/team` - Team information
+- `/tournament` - Tournament data
+- `/transfer` - Player transfers
+- `/series` - Match series
+
+**Parameters**:
+```python
+params = {
+    "wiki": "counterstrike",  # REQUIRED
+    "limit": 50,              # Default: 20, Max: 1000
+    "conditions": "[[date::>2024-11-24]] AND [[team::FURIA]]",  # SQL-like filters
+    "query": "pagename,date,team",  # Fields to return (omit for all)
+    "order": "date DESC",     # Ordering
+    "groupby": "team ASC"     # Grouping
+}
+```
+
+**Filter Syntax**:
+```python
+# Operators
+"[[field::value]]"      # equals
+"[[field::!value]]"     # not equals
+"[[field::>value]]"     # greater than
+"[[field::<value]]"     # less than
+
+# Combine with logic
+"[[date::>2024-11-01]] AND ([[tier::1]] OR [[type::!online]])"
+
+# Date functions
+"[[date_year::2024]] AND [[date_month::11]]"
+```
+
+### 📊 HTTP Response Codes
+
+| Code | Meaning | Action |
+|------|---------|--------|
+| **200** | ✅ Success | Continue |
+| **403** | 🔒 Invalid API key | Check credentials |
+| **404** | ❌ Data not found | Adjust query |
+| **429** | ⏸️ Over API limit | **STOP** - Wait 1 hour |
+
+### 🚫 Absolute Prohibitions
+
+1. ❌ **Automated HTML scraping** (APIs only)
+2. ❌ **Sharing API keys** (personal use only)
+3. ❌ **Exceeding rate limits** (60 req/h for REST)
+4. ❌ **Generic User-Agents** (will be blocked)
+5. ❌ **Omitting attribution** (license violation)
+
+**Violations result in temporary or permanent IP bans.**
+
+### ✅ Implementation Checklist
+
+When integrating Liquipedia API:
+
+- [ ] Custom User-Agent header configured
+- [ ] Accept-Encoding: gzip header configured
+- [ ] Rate limiter implemented (60 req/h max)
+- [ ] Dual cache system (memory + DB)
+- [ ] Attribution in embeds/responses
+- [ ] API key in `.env` (never hardcode)
+- [ ] Retry logic with exponential backoff for 429 errors
+- [ ] Error handling for 403, 404, 429 responses
+- [ ] No HTML scraping (API endpoints only)
+
+### 📝 Example Implementation
+
+```python
+import aiohttp
+from datetime import datetime, timedelta
+
+class LiquipediaService:
+    BASE_URL = "https://api.liquipedia.net/api/v3"
+    RATE_LIMIT = 60  # requests per hour
+    
+    def __init__(self, api_key: str):
+        self.headers = {
+            "User-Agent": "bot-hltv/1.0 (Discord; github.com/msouza10/bot-hltv)",
+            "Accept-Encoding": "gzip",
+            "Authorization": f"Apikey {api_key}"
+        }
+        self._request_times = []  # Track requests for rate limiting
+    
+    async def _check_rate_limit(self):
+        """Enforce 60 requests per hour."""
+        now = datetime.now()
+        # Remove requests older than 1 hour
+        self._request_times = [t for t in self._request_times 
+                               if now - t < timedelta(hours=1)]
+        
+        if len(self._request_times) >= self.RATE_LIMIT:
+            # Wait until oldest request expires
+            wait_time = (self._request_times[0] + timedelta(hours=1) - now).total_seconds()
+            raise RateLimitError(f"Rate limit reached. Wait {wait_time:.0f}s")
+        
+        self._request_times.append(now)
+    
+    async def get_matches(self, conditions: str = None, limit: int = 50):
+        """Fetch matches from Liquipedia."""
+        await self._check_rate_limit()
+        
+        params = {
+            "wiki": "counterstrike",
+            "limit": limit,
+        }
+        if conditions:
+            params["conditions"] = conditions
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"{self.BASE_URL}/match",
+                headers=self.headers,
+                params=params
+            ) as resp:
+                if resp.status == 429:
+                    raise RateLimitError("API rate limit exceeded")
+                elif resp.status == 403:
+                    raise AuthError("Invalid API key")
+                
+                data = await resp.json()
+                return data.get("result", [])
+```
+
+### 🔗 Documentation References
+
+- **Full API docs**: `liquipedia-doc/documentation-api-v3.md`
+- **OpenAPI spec**: `liquipedia-doc/api-calls.md`
+- **Terms of use**: `liquipedia-doc/liquipedia-use-terms.md`
+- **License**: `liquipedia-doc/liquipedia-license.md`
+
