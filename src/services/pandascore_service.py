@@ -164,3 +164,20 @@ class PandaScoreClient:
         if self.session and not self.session.closed:
             await self.session.close()
             logger.info("✓ Sessão PandaScore fechada")
+
+    async def check_health(self) -> Dict:
+        """
+        Verifica a saúde da API PandaScore.
+        
+        Returns:
+            Dict com status e latência
+        """
+        start_time = datetime.now()
+        try:
+            # Requisição leve para verificar conectividade
+            await self.get_upcoming_matches(per_page=1)
+            latency = (datetime.now() - start_time).total_seconds() * 1000
+            return {"status": "ok", "latency": latency}
+        except Exception as e:
+            logger.error(f"✗ Erro no health check da PandaScore API: {e}")
+            return {"status": "error", "latency": 0, "error": str(e)}

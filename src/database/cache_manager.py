@@ -676,3 +676,20 @@ class MatchCacheManager:
         else:
             return "unknown"
 
+
+    async def check_health(self) -> Dict:
+        """
+        Verifica a saúde do banco de dados.
+        
+        Returns:
+            Dict com status e latência
+        """
+        start_time = datetime.now()
+        try:
+            client = await self.get_client()
+            await client.execute("SELECT 1")
+            latency = (datetime.now() - start_time).total_seconds() * 1000
+            return {"status": "ok", "latency": latency}
+        except Exception as e:
+            logger.error(f"✗ Erro no health check do DB: {e}")
+            return {"status": "error", "latency": 0, "error": str(e)}

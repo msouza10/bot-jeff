@@ -276,3 +276,28 @@ class LiquipediaService:
             
         logger.info(f"💾 Team '{team_name}' salvo no CACHE DO BANCO com sucesso!")
         return team_data
+
+    async def check_health(self) -> Dict:
+        """
+        Verifica a saúde da API Liquipedia.
+        
+        Returns:
+            Dict com status e latência
+        """
+        start_time = datetime.now()
+        try:
+            # Tentar buscar um time conhecido para validar a API
+            # Usando "Furia" como teste, pois é garantido existir
+            params = {
+                "conditions": "[[pagename::Furia]]",
+                "limit": 1
+            }
+            # Usar _request diretamente para evitar lógica de cache do método get_team
+            # mas ainda aproveitando o cache de requisição se existir
+            await self._request("team", params, ttl_minutes=5)
+            
+            latency = (datetime.now() - start_time).total_seconds() * 1000
+            return {"status": "ok", "latency": latency}
+        except Exception as e:
+            logger.error(f"✗ Erro no health check da Liquipedia API: {e}")
+            return {"status": "error", "latency": 0, "error": str(e)}

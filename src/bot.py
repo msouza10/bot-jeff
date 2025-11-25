@@ -96,7 +96,7 @@ class JeffBot(commands.Bot):
         logger.info("⚙️ Carregando cogs...")
         
         cogs = [
-            "src.cogs.ping",
+            "src.cogs.status",
             "src.cogs.matches",
             "src.cogs.notifications",
             "src.cogs.liquipedia",

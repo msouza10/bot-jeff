@@ -686,3 +686,15 @@ class NotificationManager:
         """Aguarda o bot ficar pronto antes de iniciar."""
         await self.bot.wait_until_ready()
         logger.info("✅ Bot pronto | Verificação de lembretes ATIVA")
+
+    def get_status(self) -> Dict:
+        """
+        Retorna o status do gerenciador de notificações.
+        
+        Returns:
+            Dict com status
+        """
+        return {
+            "running": self.is_running,
+            "next_check": self._reminder_loop.next_iteration.isoformat() if self._reminder_loop.next_iteration else None
+        }
