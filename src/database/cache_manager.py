@@ -150,7 +150,8 @@ class MatchCacheManager:
         status: Optional[str] = None,
         hours: int = 24,
         limit: int = 100,
-        team_name: Optional[str] = None
+        team_name: Optional[str] = None,
+        tournament_name: Optional[str] = None
     ) -> List[Dict]:
         """
         Obtém partidas do cache.
@@ -160,6 +161,7 @@ class MatchCacheManager:
             hours: Últimas X horas
             limit: Limite de resultados
             team_name: Filtrar por nome do time (busca textual no JSON)
+            tournament_name: Filtrar por nome do torneio (busca textual na coluna tournament_name)
             
         Returns:
             Lista de partidas
@@ -183,6 +185,11 @@ class MatchCacheManager:
                 # Busca textual simples no JSON (case insensitive via LIKE)
                 query_parts.append("AND match_data LIKE ?")
                 params.append(f"%{team_name}%")
+            
+            if tournament_name:
+                # Busca textual na coluna tournament_name (case insensitive via LIKE)
+                query_parts.append("AND tournament_name LIKE ?")
+                params.append(f"%{tournament_name}%")
             
             if status == "results":
                 query_parts.append("ORDER BY COALESCE(begin_at, updated_at) DESC")
@@ -374,7 +381,8 @@ class MatchCacheManager:
         self, 
         status: str, 
         limit: int = 50,
-        team_name: Optional[str] = None
+        team_name: Optional[str] = None,
+        tournament_name: Optional[str] = None
     ) -> List[Dict]:
         """
         Obtém partidas do cache em memória (muito rápido!).
@@ -383,6 +391,7 @@ class MatchCacheManager:
             status: 'upcoming', 'running', ou 'finished'
             limit: Limite de resultados
             team_name: Filtrar por nome do time
+            tournament_name: Filtrar por nome do torneio
             
         Returns:
             Lista de partidas (pode estar vazia se nunca foi atualizado)
@@ -394,6 +403,7 @@ class MatchCacheManager:
         
         matches = _memory_cache.get(status) or []
         
+        # Filtro por time
         if team_name:
             team_name_lower = team_name.lower()
             filtered_matches = []
@@ -411,6 +421,19 @@ class MatchCacheManager:
                     found = True
                     
                 if found:
+                    filtered_matches.append(match)
+            matches = filtered_matches
+            
+        # Filtro por torneio
+        if tournament_name:
+            tournament_name_lower = tournament_name.lower()
+            filtered_matches = []
+            for match in matches:
+                # Verificar no nome do torneio
+                tourn_name = match.get("tournament", {}).get("name", "").lower()
+                league_name = match.get("league", {}).get("name", "").lower()
+                
+                if tournament_name_lower in tourn_name or tournament_name_lower in league_name:
                     filtered_matches.append(match)
             matches = filtered_matches
             
