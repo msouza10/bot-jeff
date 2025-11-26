@@ -369,7 +369,7 @@ Melhorias não-críticas identificadas:
 ### A. FILTROS E BUSCAS AVANÇADAS
 
 #### 1. Filtrar Partidas por Time
-- [ ] **Comando**: `/partidas-time time:SK equipe:true futuras:5`
+- [x] **Comando**: `/partidas [futuras|ao_vivo|resultados] time:[nome]`
 - **Descrição**: Mostrar partidas de um time específico (como SK, FURIA, etc)
 - **Implementação**:
   - Adicionar coluna `teams_filter` na DB
@@ -380,7 +380,7 @@ Melhorias não-críticas identificadas:
 - **Prioridade**: 🔴 Alta
 
 #### 2. Filtrar Partidas por Torneio
-- [ ] **Comando**: `/partidas-torneio torneio:ESL futuras:5`
+- [x] **Comando**: `/partidas [futuras|ao_vivo|resultados] torneio:[nome]`
 - **Descrição**: Mostrar partidas de um torneio específico
 - **Implementação**:
   - Query na DB por `tournament_name`
@@ -409,6 +409,40 @@ Melhorias não-críticas identificadas:
 - **Benefício**: Usuários podem buscar do seu jeito
 - **Dificuldade**: ⭐⭐⭐ (Difícil)
 - **Prioridade**: 🟡 Média
+
+### C. INTEGRAÇÃO LIQUIPEDIA (DADOS ENRIQUECIDOS)
+
+#### 9. Enriquecimento de Partidas
+- [ ] **Funcionalidade**: Exibir Tier e Premiação nas partidas
+- **Descrição**: Buscar dados do torneio na Liquipedia (lazy loading) para enriquecer embeds
+- **Implementação**:
+  - Cache de torneios (24h)
+  - Verificar se torneio existe no cache ao exibir partida
+  - Se não, agendar fetch para próxima exibição
+- **Benefício**: Mais contexto sobre a importância da partida
+- **Dificuldade**: ⭐⭐ (Média)
+- **Prioridade**: 🟡 Média
+
+#### 10. Comando de Transferências
+- [ ] **Comando**: `/transferencias`
+- **Descrição**: Listar últimas mudanças de lineup (Roster Changes)
+- **Implementação**:
+  - Endpoint `/transfer` da Liquipedia
+  - Cache de 1h
+- **Benefício**: Manter usuários atualizados sobre o cenário
+- **Dificuldade**: ⭐ (Fácil)
+- **Prioridade**: 🟢 Baixa
+
+#### 11. Detalhes de Jogador/Time
+- [ ] **Comando**: `/jogador [nome]` e `/time [nome]`
+- **Descrição**: Perfil detalhado com dados da Liquipedia
+- **Implementação**:
+  - Endpoints `/player` e `/team`
+  - Cache de 24h
+  - Exibir ganhos, histórico, configurações (crosshair, etc)
+- **Benefício**: Enciclopédia de CS dentro do Discord
+- **Dificuldade**: ⭐⭐ (Média)
+- **Prioridade**: 🟢 Baixa
 
 ---
 
@@ -974,6 +1008,16 @@ Melhorias não-críticas identificadas:
 
 ---
 
+## ✅ CONCLUÍDO - Fase 6: Liquipedia Integration
+
+### 13. Autocomplete e Normalização
+- [x] **Status**: CONCLUÍDO E VALIDADO
+- **Implementação**:
+  - `LiquipediaService`: Busca por `id`, `alternateid`, `name`.
+  - `LiquipediaService`: Métodos `search_players` e `search_teams` para autocomplete.
+  - `LiquipediaCog`: Autocomplete handlers para `/jogador` e `/time`.
+- **Validação**: ✅ Scripts de teste confirmaram busca por alias e autocomplete.
+
 ## 📊 Resumo do Status Atual
 
 | Fase | Tarefa | Status | Validação |
@@ -990,6 +1034,7 @@ Melhorias não-críticas identificadas:
 | 10 | Logs | ✅ CONCLUÍDO | ✅ Sistema funcionando |
 | 11 | Teste Performance | ⏳ PENDENTE | Aguardando teste em Discord |
 | 12 | Teste Reminders | ⏳ PENDENTE | Aguardando monitoramento |
+| 13 | Liquipedia Integration | ✅ CONCLUÍDO | ✅ Autocomplete & Normalization |
 
 **Bot Status**: 🟢 RUNNING - Aguardando validação de performance
 

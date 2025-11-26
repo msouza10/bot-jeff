@@ -135,11 +135,16 @@ class LiquipediaService:
         logger.info(f"🎮 get_player('{player_name}') - Iniciando busca...")
         
         # PRIMEIRO: Verificar no banco de dados (cache estruturado)
+        # Busca por ID, Name ou AlternateID (case-insensitive)
         logger.debug(f"🔍 Verificando cache do banco para player '{player_name}'...")
         async with get_db_connection() as db:
             async with db.execute(
-                "SELECT data_json FROM players WHERE id = ?",
-                (player_name,)
+                """
+                SELECT data_json FROM players 
+                WHERE id LIKE ? OR name LIKE ? OR alternateid LIKE ?
+                LIMIT 1
+                """,
+                (player_name, player_name, player_name)
             ) as cursor:
                 row = await cursor.fetchone()
                 if row:
@@ -148,8 +153,10 @@ class LiquipediaService:
         
         # SE NÃO ENCONTROU: Buscar da API
         logger.info(f"🌐 Player '{player_name}' NÃO encontrado no cache, buscando na API Liquipedia...")
+        
+        # Query expandida para tentar encontrar por ID, AlternateID ou Name
         params = {
-            "conditions": f"[[id::{player_name}]]",
+            "conditions": f"[[id::{player_name}]] OR [[alternateid::{player_name}]] OR [[name::{player_name}]]",
             "limit": 1
         }
         
@@ -210,11 +217,16 @@ class LiquipediaService:
         logger.info(f"🏆 get_team('{team_name}') - Iniciando busca...")
         
         # PRIMEIRO: Verificar no banco de dados (cache estruturado)
+        # Busca por ID ou Name (case-insensitive)
         logger.debug(f"🔍 Verificando cache do banco para team '{team_name}'...")
         async with get_db_connection() as db:
             async with db.execute(
-                "SELECT data_json FROM teams WHERE id = ?",
-                (team_name,)
+                """
+                SELECT data_json FROM teams 
+                WHERE id LIKE ? OR name LIKE ?
+                LIMIT 1
+                """,
+                (team_name, team_name)
             ) as cursor:
                 row = await cursor.fetchone()
                 if row:
@@ -223,8 +235,10 @@ class LiquipediaService:
         
         # SE NÃO ENCONTROU: Buscar da API
         logger.info(f"🌐 Team '{team_name}' NÃO encontrado no cache, buscando na API Liquipedia...")
+        
+        # Query expandida para tentar encontrar por PageName ou Name
         params = {
-            "conditions": f"[[pagename::{team_name}]]",
+            "conditions": f"[[pagename::{team_name}]] OR [[name::{team_name}]]",
             "limit": 1
         }
         
@@ -276,6 +290,66 @@ class LiquipediaService:
             
         logger.info(f"💾 Team '{team_name}' salvo no CACHE DO BANCO com sucesso!")
         return team_data
+
+    async def search_players(self, query: str, limit: int = 25) -> list[str]:
+        """
+        Busca jogadores no cache local para autocomplete.
+        Retorna lista de nomes (IDs).
+        Se query for vazia, retorna os últimos atualizados.
+        """
+        async with get_db_connection() as db:
+            if not query:
+                # Se query vazia, retornar os últimos atualizados
+                async with db.execute(
+                    "SELECT id FROM players ORDER BY updated_at DESC LIMIT ?",
+                    (limit,)
+                ) as cursor:
+                    rows = await cursor.fetchall()
+                    return [row[0] for row in rows]
+            
+            # Se tem query, busca normal
+            query_like = f"%{query}%"
+            async with db.execute(
+                """
+                SELECT id FROM players 
+                WHERE id LIKE ? OR name LIKE ? OR alternateid LIKE ?
+                ORDER BY length(id) ASC
+                LIMIT ?
+                """,
+                (query_like, query_like, query_like, limit)
+            ) as cursor:
+                rows = await cursor.fetchall()
+                return [row[0] for row in rows]
+
+    async def search_teams(self, query: str, limit: int = 25) -> list[str]:
+        """
+        Busca times no cache local para autocomplete.
+        Retorna lista de nomes (IDs/Pagenames).
+        Se query for vazia, retorna os últimos atualizados.
+        """
+        async with get_db_connection() as db:
+            if not query:
+                # Se query vazia, retornar os últimos atualizados
+                async with db.execute(
+                    "SELECT id FROM teams ORDER BY updated_at DESC LIMIT ?",
+                    (limit,)
+                ) as cursor:
+                    rows = await cursor.fetchall()
+                    return [row[0] for row in rows]
+
+            # Se tem query, busca normal
+            query_like = f"%{query}%"
+            async with db.execute(
+                """
+                SELECT id FROM teams 
+                WHERE id LIKE ? OR name LIKE ?
+                ORDER BY length(id) ASC
+                LIMIT ?
+                """,
+                (query_like, query_like, limit)
+            ) as cursor:
+                rows = await cursor.fetchall()
+                return [row[0] for row in rows]
 
     async def check_health(self) -> Dict:
         """

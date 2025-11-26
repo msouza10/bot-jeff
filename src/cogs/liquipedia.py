@@ -181,6 +181,13 @@ class LiquipediaCog(commands.Cog):
             )
             await interaction.followup.send(embed=embed)
     
+    @jogador.on_autocomplete("nome")
+    async def jogador_autocomplete(self, interaction: nextcord.Interaction, nome: str):
+        """Autocomplete para o nome do jogador."""
+        # Buscar sugestões no cache (mesmo se vazio)
+        suggestions = await self.liquipedia_service.search_players(nome)
+        await interaction.response.send_autocomplete(suggestions)
+
     @nextcord.slash_command(name="time", description="Busca informações de um time de CS2 na Liquipedia")
     async def team(
         self,
@@ -298,6 +305,13 @@ class LiquipediaCog(commands.Cog):
                 color=0xFF0000
             )
             await interaction.followup.send(embed=embed)
+
+    @team.on_autocomplete("nome")
+    async def team_autocomplete(self, interaction: nextcord.Interaction, nome: str):
+        """Autocomplete para o nome do time."""
+        # Buscar sugestões no cache (mesmo se vazio)
+        suggestions = await self.liquipedia_service.search_teams(nome)
+        await interaction.response.send_autocomplete(suggestions)
 
 
 def setup(bot):
