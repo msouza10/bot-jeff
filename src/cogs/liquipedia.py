@@ -55,7 +55,8 @@ class LiquipediaCog(commands.Cog):
             embed = nextcord.Embed(
                 title=f"🎮 {player_data.get('name', nome)}",
                 url=f"https://liquipedia.net/counterstrike/{player_data.get('pagename', nome)}",
-                color=0x00FF00
+                color=0x00FF00,
+                timestamp=datetime.utcnow()
             )
             
             # Campo: ID / IGN
@@ -166,7 +167,31 @@ class LiquipediaCog(commands.Cog):
                     inline=False
                 )
             
-            embed.set_footer(text="Dados fornecidos por Liquipedia (CC-BY-SA 3.0)")
+            # Footer com metadados do cache
+            metadata = player_data.get('_cache_metadata', {})
+            source = metadata.get('source', 'unknown')
+            updated_at_str = metadata.get('updated_at', '')
+            
+            # Formatar data/hora
+            if updated_at_str:
+                try:
+                    import pytz
+                    
+                    updated_dt = datetime.fromisoformat(updated_at_str)
+                    # Converter para BRT (UTC-3)
+                    brt = pytz.timezone('America/Sao_Paulo')
+                    updated_brt = updated_dt.astimezone(brt) if updated_dt.tzinfo else brt.localize(updated_dt)
+                    
+                    cache_date = updated_brt.strftime('%d/%m/%Y, %H:%M')
+                    source_text = "Cache" if source == "cache" else "API"
+                    
+                    footer_text = f"Dados fornecidos por Liquipedia (CC-BY-SA 3.0) • {source_text} {cache_date} • BRT (UTC-3)"
+                except:
+                    footer_text = "Dados fornecidos por Liquipedia (CC-BY-SA 3.0)"
+            else:
+                footer_text = "Dados fornecidos por Liquipedia (CC-BY-SA 3.0)"
+            
+            embed.set_footer(text=footer_text)
             
             logger.debug(f"📤 Enviando embed para o usuário...")
             await interaction.followup.send(embed=embed)
@@ -222,7 +247,8 @@ class LiquipediaCog(commands.Cog):
             embed = nextcord.Embed(
                 title=f"🏆 {team_data.get('name', nome)}",
                 url=f"https://liquipedia.net/counterstrike/{team_data.get('pagename', nome).replace(' ', '_')}",
-                color=0x0099FF
+                color=0x0099FF,
+                timestamp=datetime.utcnow()
             )
             
             # Logo do time (se disponível)
@@ -291,7 +317,31 @@ class LiquipediaCog(commands.Cog):
                     inline=False
                 )
             
-            embed.set_footer(text="Dados fornecidos por Liquipedia (CC-BY-SA 3.0)")
+            # Footer com metadados do cache
+            metadata = team_data.get('_cache_metadata', {})
+            source = metadata.get('source', 'unknown')
+            updated_at_str = metadata.get('updated_at', '')
+            
+            # Formatar data/hora
+            if updated_at_str:
+                try:
+                    import pytz
+                    
+                    updated_dt = datetime.fromisoformat(updated_at_str)
+                    # Converter para BRT (UTC-3)
+                    brt = pytz.timezone('America/Sao_Paulo')
+                    updated_brt = updated_dt.astimezone(brt) if updated_dt.tzinfo else brt.localize(updated_dt)
+                    
+                    cache_date = updated_brt.strftime('%d/%m/%Y, %H:%M')
+                    source_text = "Cache" if source == "cache" else "API"
+                    
+                    footer_text = f"Dados fornecidos por Liquipedia (CC-BY-SA 3.0) • {source_text} {cache_date} • BRT (UTC-3)"
+                except:
+                    footer_text = "Dados fornecidos por Liquipedia (CC-BY-SA 3.0)"
+            else:
+                footer_text = "Dados fornecidos por Liquipedia (CC-BY-SA 3.0)"
+            
+            embed.set_footer(text=footer_text)
             
             logger.debug(f"📤 Enviando embed para o usuário...")
             await interaction.followup.send(embed=embed)

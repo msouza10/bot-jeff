@@ -1,0 +1,368 @@
+Team: CSDIILIT
+Team:1WIN
+Team:20/70
+Team:2GAME
+Team:3DMAX
+Team:7REX
+Team:9z
+Team:9z Academy
+Team:AGF Esports Academy
+Team:AMIGOS
+Team:AMKAL ESPORTS
+Team:ARCRED
+Team:AVANGAR
+Team:AaB esport
+Team:After
+Team:Alzon
+Team:Ambush
+Team:América eSports
+Team:Anonymo
+Team:Apeks
+Team:Apeks Rebels
+Team:Arctic
+Team:Astralis
+Team:Atrix Esports
+Team:Audacity
+Team:Aurora Gaming
+Team:B8 Esports
+Team:BASEMENT BOYS
+Team:BESTIA
+Team:BESTIA Academy
+Team:BIG
+Team:BIG Academy
+Team:BIG EQUIPA
+Team:BLINK
+Team:BLUEJAYS
+Team:BREAKTHROUGH
+Team:BetBoom Team
+Team:Brute
+Team:Budapest Five
+Team:Bushido Wildcats
+Team:CN-CQF
+Team:Case
+Team:CatEvil
+Team:Catchii
+Team:Checkmate
+Team:Cloud9
+Team:Complexity
+Team:Copenhagen Wolves
+Team:Corinthians Esports
+Team:Crashers
+Team:Cryptova
+Team:D13
+Team:DNG
+Team:Dusty Roots
+Team:Dynamo Eclot
+Team:EC Kyiv
+Team:ECSTATIC
+Team:ENCE
+Team:ENCE Academy
+Team:ESIMED
+Team:EYEBALLERS
+Team:Elevate
+Team:Endless Journey
+Team:Enhanced Esports Club
+Team:Entropiq Prague
+Team:Eternal Fire
+Team:Ex-SPARX ESPORTS
+Team:FOLHA AMARELA
+Team:FORZE Reload
+Team:FURIA Esports
+Team:FUT Turkuaz
+Team:FaZe
+Team:FaZe Clan
+Team:Floripa Stars Academy
+Team:Fluxo
+Team:FlyQuest
+Team:FlyQuest RED
+Team:Fnatic
+Team:Four Magic
+Team:Free TON
+Team:Fuego
+Team:G2 Esports
+Team:GANK Esports
+Team:GLORE
+Team:GROND
+Team:Game Hunters
+Team:GamerLegion
+Team:Goodfellas
+Team:Ground Zero
+Team:Gucci Gang
+Team:HAVU
+Team:HEROIC
+Team:HOTU
+Team:HZ
+Team:Ha MaSSe
+Team:Hotspurs
+Team:HyperSpirit
+Team:INDE IRAE
+Team:INFURITY Gaming
+Team:Imperial
+Team:Imperial Valkyries
+Team:Insilio
+Team:Intense
+Team:JERSA ESPORTS
+Team:JUMBO TEAM
+Team:Jake Bube
+Team:JiJieHao
+Team:K23
+Team:KOVA
+Team:KRC Genk Esports
+Team:KRÜ Esports
+Team:Kirikou
+Team:LDLC
+Team:LRV Esports
+Team:LaChampionsLiga
+Team:Lagom
+Team:Lausanne-Sport Esports
+Team:Legacy
+Team:Leo Team
+Team:Let Her Cook
+Team:Lilmix
+Team:Los Grandes
+Team:Lynn Vision
+Team:M80
+Team:MAGICOS
+Team:MANA eSports
+Team:MASONIC
+Team:MIBR
+Team:MIBR Academy
+Team:MIBR fe
+Team:MNA
+Team:MOUZ
+Team:MOUZ NXT
+Team:Madagaskar
+Team:Metizport
+Team:Millennium Esports
+Team:Misa Esports
+Team:Moralezz
+Team:Mousquetaires
+Team:Movistar KOI
+Team:NASR
+Team:NJ
+Team:NLG
+Team:NOSTALGIA
+Team:NRG
+Team:NRG Esports
+Team:Natus Vincere
+Team:Nemiga Gaming
+Team:Ninjas in Pyjamas
+Team:Ninjas in Pyjamas Impact
+Team:Northern Lights
+Team:Nuclear TigeRES
+Team:ODDIK Academy
+Team:OG Esports
+Team:OnlineBOTS
+Team:Onyx Ravens
+Team:Oxuji Esports
+Team:PALOMA
+Team:PAPERPLANES
+Team:PARIVISION
+Team:Parivision
+Team:Partizan Esport
+Team:Passion UA
+Team:Players
+Team:Poggerz
+Team:Pompa Team
+Team:Prestige
+Team:Procyon Gaming
+Team:Project X
+Team:QWENTRY
+Team:Quantiq
+Team:R2 Esports Club
+Team:RED Canids
+Team:RED Canids Academy
+Team:RUBY
+Team:Rare Atom
+Team:Reece
+Team:Romanos
+Team:SAW
+Team:SEKINLO
+Team:SG.pro
+Team:SJ
+Team:SPARTA
+Team:Saints
+Team:Sakura Esports
+Team:Sampi
+Team:Sangal ALTERS
+Team:ShindeN
+Team:Sinners
+Team:Sissi State Punks
+Team:Skottkärra
+Team:Steel Helmet
+Team:TBC
+Team:TGD Pro
+Team:THUNDER dOWNUNDER
+Team:THUNDR Esports
+Team:TYLOO
+Team:Take Aim Gaming
+Team:Team Atlantic
+Team:Team Falcons
+Team:Team Liquid
+Team:Team MCE
+Team:Team Novaq
+Team:Team Solid
+Team:Team Spirit
+Team:Team Storm
+Team:Team Vitality
+Team:The Chosen Few
+Team:The Huns
+Team:The MongolZ
+Team:The Suspect
+Team:The Union
+Team:Touch The Crown
+Team:Tricked
+Team:Truck Drivers
+Team:UNGEPICKT
+Team:UNION88
+Team:UNO MILLE
+Team:UNiTY esports
+Team:VP.Prodigy
+Team:Virtus.pro
+Team:W7M
+Team:WOPA Esport
+Team:Washington
+Team:Wildcard
+Team:Yawara Esports
+Team:Young Ninjas
+Team:ZIGMA
+Team:ZURIA
+Team:Zero Tenacity
+Team:devils.one
+Team:eSports Recife
+Team:ex-AVEZ
+Team:ex-ESC Gaming
+Team:ex-Tenerife Titans
+Team:flowstate
+Team:glaani
+Team:gofastwin
+Team:hREDS
+Team:helvete
+Team:iNation
+Team:ins
+Team:largadosypelados
+Team:los kogutos
+Team:lospegadinhas
+Team:m1x
+Team:mCon
+Team:megoshort
+Team:n3wb0rn
+Team:old Z
+Team:paiN Academy
+Team:paiN Gaming
+Team:pe4c3
+Team:undefined
+Team:w2c
+Team:zhertvi desynqa
+Player:910
+Player:Aleksib
+Player:Ax1Le
+Player:Boombl4
+Player:Brollan
+Player:Buzz
+Player:Calyx
+Player:Djoko
+Player:EliGE
+Player:FL1T
+Player:FalleN
+Player:Graviti
+Player:Grim
+Player:HEN1
+Player:HooXi
+Player:JT
+Player:Jame
+Player:Jimpphat
+Player:KRIMZ
+Player:KSCERATO
+Player:Krimbo
+Player:Lucky
+Player:MAJ3R
+Player:MATYS
+Player:Magisk
+Player:Manzov
+Player:NAF
+Player:NiKo
+Player:Pellyco
+Player:Perfecto
+Player:REZ
+Player:Senzu
+Player:Spinx
+Player:Staehr
+Player:TeSeS
+Player:Techno4K
+Player:Twistzz
+Player:VINI
+Player:XANTARES
+Player:YEKINDAR
+Player:ZywOo
+Player:acoR
+Player:afro
+Player:alex
+Player:apEX
+Player:bLitz
+Player:biguzera
+Player:bodyy
+Player:boltz
+Player:br0
+Player:brnz4n
+Player:broky
+Player:cadiaN
+Player:chelo
+Player:chopper
+Player:degster
+Player:device
+Player:donk
+Player:drop
+Player:dumau
+Player:electroNic
+Player:exit
+Player:fame
+Player:felps
+Player:flameZ
+Player:floppy
+Player:frozen
+Player:hallzerk
+Player:hardzao
+Player:headtr1ck
+Player:huNter-
+Player:iM
+Player:imoRR
+Player:insani
+Player:interz
+Player:isak
+Player:jL
+Player:jabbi
+Player:karrigan
+Player:kauez
+Player:m0NESY
+Player:magixx
+Player:mezii
+Player:mzinho
+Player:n0rb3r7
+Player:n4rrate
+Player:nertz
+Player:nexa
+Player:nicoodoz
+Player:nqz
+Player:prosus
+Player:qikert
+Player:r1nkle
+Player:rain
+Player:rigoN
+Player:ropz
+Player:s1mple
+Player:saffee
+Player:sh1ro
+Player:siuhy
+Player:sjuush
+Player:skullz
+Player:syrsoN
+Player:tabseN
+Player:torzsi
+Player:ultimate
+Player:volt
+Player:w0nderful
+Player:woxic
+Player:xertioN
+Player:yuurih
+Player:zont1x

@@ -134,13 +134,16 @@ class LiquipediaService:
         """Fetches player information by name (ID)."""
         logger.info(f"🎮 get_player('{player_name}') - Iniciando busca...")
         
+        # Constante TTL (15 dias)
+        TTL_DAYS = 15
+        
         # PRIMEIRO: Verificar no banco de dados (cache estruturado)
         # Busca por ID, Name ou AlternateID (case-insensitive)
         logger.debug(f"🔍 Verificando cache do banco para player '{player_name}'...")
         async with get_db_connection() as db:
             async with db.execute(
                 """
-                SELECT data_json FROM players 
+                SELECT data_json, updated_at FROM players 
                 WHERE id LIKE ? OR name LIKE ? OR alternateid LIKE ?
                 LIMIT 1
                 """,
@@ -148,11 +151,25 @@ class LiquipediaService:
             ) as cursor:
                 row = await cursor.fetchone()
                 if row:
-                    logger.info(f"✅ Player '{player_name}' encontrado no CACHE DO BANCO!")
-                    return json.loads(row[0])
+                    # Verificar se o cache está válido (< 15 dias)
+                    updated_at = datetime.fromisoformat(row[1])
+                    age_days = (datetime.now() - updated_at).days
+                    
+                    if age_days < TTL_DAYS:
+                        logger.info(f"✅ Player '{player_name}' encontrado no CACHE DO BANCO! (atualizado há {age_days} dias)")
+                        player_data = json.loads(row[0])
+                        # Adicionar metadata do cache
+                        player_data['_cache_metadata'] = {
+                            'source': 'cache',
+                            'updated_at': row[1]
+                        }
+                        return player_data
+                    else:
+                        logger.info(f"⏰ Player '{player_name}' encontrado no cache mas EXPIRADO (atualizado há {age_days} dias, TTL: {TTL_DAYS} dias)")
+                        # Cache expirado, continuar para buscar da API
         
-        # SE NÃO ENCONTROU: Buscar da API
-        logger.info(f"🌐 Player '{player_name}' NÃO encontrado no cache, buscando na API Liquipedia...")
+        # SE NÃO ENCONTROU OU CACHE EXPIRADO: Buscar da API
+        logger.info(f"🌐 Player '{player_name}' - Buscando na API Liquipedia...")
         
         # Query expandida para tentar encontrar por ID, AlternateID ou Name
         params = {
@@ -160,7 +177,7 @@ class LiquipediaService:
             "limit": 1
         }
         
-        data = await self._request("player", params, ttl_minutes=1440) # Cache for 24 hours
+        data = await self._request("player", params, ttl_minutes=21600)  # Cache API por 15 dias (21600 minutos)
         
         if data and "result" in data and len(data["result"]) > 0:
             player_data = data["result"][0]
@@ -170,6 +187,7 @@ class LiquipediaService:
                 return json.dumps(val) if val is not None else None
             
             # Save to specific players table for easier access
+            # O updated_at será atualizado automaticamente pelo CURRENT_TIMESTAMP
             async with get_db_connection() as db:
                 await db.execute(
                     """
@@ -177,8 +195,8 @@ class LiquipediaService:
                         id, pageid, pagename, alternateid, name, localizedname, type,
                         nationality, nationality2, nationality3, region, birthdate, deathdate,
                         teampagename, teamtemplate, links, status, earnings, earningsbyyear,
-                        extradata, data_json
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        extradata, data_json, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                     """,
                     (
                         player_data.get("id"),
@@ -206,7 +224,12 @@ class LiquipediaService:
                 )
                 await db.commit()
             
-            logger.info(f"💾 Player '{player_name}' salvo no CACHE DO BANCO com sucesso!")
+            logger.info(f"💾 Player '{player_name}' salvo/atualizado no CACHE DO BANCO com sucesso!")
+            # Adicionar metadata da API
+            player_data['_cache_metadata'] = {
+                'source': 'api',
+                'updated_at': datetime.now().isoformat()
+            }
             return player_data
         
         logger.warning(f"⚠️ Player '{player_name}' NÃO encontrado na API Liquipedia.")
@@ -216,13 +239,16 @@ class LiquipediaService:
         """Busca informações de um time na Liquipedia."""
         logger.info(f"🏆 get_team('{team_name}') - Iniciando busca...")
         
+        # Constante TTL (15 dias)
+        TTL_DAYS = 15
+        
         # PRIMEIRO: Verificar no banco de dados (cache estruturado)
         # Busca por ID ou Name (case-insensitive)
         logger.debug(f"🔍 Verificando cache do banco para team '{team_name}'...")
         async with get_db_connection() as db:
             async with db.execute(
                 """
-                SELECT data_json FROM teams 
+                SELECT data_json, updated_at FROM teams 
                 WHERE id LIKE ? OR name LIKE ?
                 LIMIT 1
                 """,
@@ -230,11 +256,25 @@ class LiquipediaService:
             ) as cursor:
                 row = await cursor.fetchone()
                 if row:
-                    logger.info(f"✅ Team '{team_name}' encontrado no CACHE DO BANCO!")
-                    return json.loads(row[0])
+                    # Verificar se o cache está válido (< 15 dias)
+                    updated_at = datetime.fromisoformat(row[1])
+                    age_days = (datetime.now() - updated_at).days
+                    
+                    if age_days < TTL_DAYS:
+                        logger.info(f"✅ Team '{team_name}' encontrado no CACHE DO BANCO! (atualizado há {age_days} dias)")
+                        team_data = json.loads(row[0])
+                        # Adicionar metadata do cache
+                        team_data['_cache_metadata'] = {
+                            'source': 'cache',
+                            'updated_at': row[1]
+                        }
+                        return team_data
+                    else:
+                        logger.info(f"⏰ Team '{team_name}' encontrado no cache mas EXPIRADO (atualizado há {age_days} dias, TTL: {TTL_DAYS} dias)")
+                        # Cache expirado, continuar para buscar da API
         
-        # SE NÃO ENCONTROU: Buscar da API
-        logger.info(f"🌐 Team '{team_name}' NÃO encontrado no cache, buscando na API Liquipedia...")
+        # SE NÃO ENCONTROU OU CACHE EXPIRADO: Buscar da API
+        logger.info(f"🌐 Team '{team_name}' - Buscando na API Liquipedia...")
         
         # Query expandida para tentar encontrar por PageName ou Name
         params = {
@@ -242,7 +282,7 @@ class LiquipediaService:
             "limit": 1
         }
         
-        data = await self._request("team", params, ttl_minutes=1440) # Cache for 24 hours
+        data = await self._request("team", params, ttl_minutes=21600)  # Cache API por 15 dias (21600 minutos)
         
         if not data or "result" not in data or not data["result"]:
             return None
@@ -254,14 +294,15 @@ class LiquipediaService:
             return json.dumps(val) if val is not None else None
 
         # Salva na tabela específica de times
+        # O updated_at será atualizado automaticamente pelo CURRENT_TIMESTAMP
         async with get_db_connection() as db:
             await db.execute(
                 """
                 INSERT OR REPLACE INTO teams (
                     id, pageid, name, locations, region, logo, logourl, logodark, logodarkurl,
                     textlesslogourl, textlesslogodarkurl, status, createdate, disbanddate,
-                    earnings, earningsbyyear, template, links, extradata, data_json
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    earnings, earningsbyyear, template, links, extradata, data_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 """,
                 (
                     team_data.get("pagename"),
@@ -288,7 +329,12 @@ class LiquipediaService:
             )
             await db.commit()
             
-        logger.info(f"💾 Team '{team_name}' salvo no CACHE DO BANCO com sucesso!")
+        logger.info(f"💾 Team '{team_name}' salvo/atualizado no CACHE DO BANCO com sucesso!")
+        # Adicionar metadata da API
+        team_data['_cache_metadata'] = {
+            'source': 'api',
+            'updated_at': datetime.now().isoformat()
+        }
         return team_data
 
     async def search_players(self, query: str, limit: int = 25) -> list[str]:
