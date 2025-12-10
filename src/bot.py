@@ -154,6 +154,15 @@ class JeffBot(commands.Bot):
     async def on_guild_join(self, guild: nextcord.Guild):
         """Evento chamado quando o bot entra em um servidor."""
         logger.info(f"✓ Bot adicionado ao servidor: {guild.name} (ID: {guild.id})")
+        
+        # Sincronizar comandos automaticamente para o novo servidor
+        try:
+            logger.info(f"⏳ Sincronizando comandos para {guild.name}...")
+            self.tree.copy_global_to(guild=guild)
+            await self.tree.sync(guild=guild)
+            logger.info(f"✅ Comandos sincronizados automaticamente para {guild.name}!")
+        except Exception as e:
+            logger.error(f"❌ Falha ao sincronizar comandos para {guild.name}: {e}")
     
     async def on_guild_remove(self, guild: nextcord.Guild):
         """Evento chamado quando o bot sai de um servidor."""
