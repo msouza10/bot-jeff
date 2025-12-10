@@ -158,8 +158,16 @@ class JeffBot(commands.Bot):
         # Sincronizar comandos automaticamente para o novo servidor
         try:
             logger.info(f"⏳ Sincronizando comandos para {guild.name}...")
-            self.tree.copy_global_to(guild=guild)
-            await self.tree.sync(guild=guild)
+            # Em Nextcord, usamos sync_application_commands
+            await self.sync_all_application_commands() # Sincroniza tudo para garantir
+            # Ou se quiser forçar apenas para o guild (se houver comandos de guild específicos)
+            # await self.sync_application_commands(guild_id=guild.id)
+            
+            # Nota: Nextcord não tem 'copy_global_to' nativo como discord.py
+            # Vamos forçar um sync geral que deve registrar os comandos no novo guild se forem globais
+            # Mas para garantir que apareçam rápido, podemos tentar registrar no guild
+            await self.sync_application_commands(guild_id=guild.id)
+            
             logger.info(f"✅ Comandos sincronizados automaticamente para {guild.name}!")
         except Exception as e:
             logger.error(f"❌ Falha ao sincronizar comandos para {guild.name}: {e}")

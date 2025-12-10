@@ -154,15 +154,14 @@ class StatusCog(commands.Cog):
         try:
             if spec == "global":
                 msg = await ctx.send("⏳ Sincronizando comandos **globalmente**... Isso pode demorar para propagar.")
-                synced = await self.bot.tree.sync()
-                await msg.edit(content=f"✅ Sincronizados {len(synced)} comandos globalmente!")
-                logger.info(f"✅ Comandos sincronizados globalmente com sucesso. Total: {len(synced)}")
+                await self.bot.sync_all_application_commands()
+                await msg.edit(content=f"✅ Comandos sincronizados globalmente!")
+                logger.info(f"✅ Comandos sincronizados globalmente com sucesso.")
             else:
                 msg = await ctx.send("⏳ Sincronizando comandos para **este servidor**...")
-                self.bot.tree.copy_global_to(guild=ctx.guild)
-                synced = await self.bot.tree.sync(guild=ctx.guild)
-                await msg.edit(content=f"✅ Sincronizados {len(synced)} comandos para este servidor!")
-                logger.info(f"✅ Comandos sincronizados para {ctx.guild.name} (ID: {ctx.guild.id}) com sucesso. Total: {len(synced)}")
+                await self.bot.sync_application_commands(guild_id=ctx.guild.id)
+                await msg.edit(content=f"✅ Comandos sincronizados para este servidor!")
+                logger.info(f"✅ Comandos sincronizados para {ctx.guild.name} (ID: {ctx.guild.id}) com sucesso.")
         except Exception as e:
             logger.error(f"❌ Erro ao executar !sync: {e}", exc_info=True)
             await ctx.send(f"❌ Erro ao sincronizar: {e}")
