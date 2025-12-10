@@ -149,17 +149,23 @@ class StatusCog(commands.Cog):
         !sync -> Sincroniza apenas para o servidor atual (rápido)
         !sync global -> Sincroniza globalmente (pode demorar ~1h)
         """
-        if spec == "global":
-            msg = await ctx.send("⏳ Sincronizando comandos **globalmente**... Isso pode demorar para propagar.")
-            synced = await self.bot.tree.sync()
-            await msg.edit(content=f"✅ Sincronizados {len(synced)} comandos globalmente!")
-            logger.info(f"Comandos sincronizados globalmente por {ctx.author}")
-        else:
-            msg = await ctx.send("⏳ Sincronizando comandos para **este servidor**...")
-            self.bot.tree.copy_global_to(guild=ctx.guild)
-            synced = await self.bot.tree.sync(guild=ctx.guild)
-            await msg.edit(content=f"✅ Sincronizados {len(synced)} comandos para este servidor!")
-            logger.info(f"Comandos sincronizados para {ctx.guild.name} por {ctx.author}")
+        logger.info(f"🔄 Comando !sync iniciado por {ctx.author} (ID: {ctx.author.id}) no servidor {ctx.guild.name} (ID: {ctx.guild.id}). Spec: {spec}")
+        
+        try:
+            if spec == "global":
+                msg = await ctx.send("⏳ Sincronizando comandos **globalmente**... Isso pode demorar para propagar.")
+                synced = await self.bot.tree.sync()
+                await msg.edit(content=f"✅ Sincronizados {len(synced)} comandos globalmente!")
+                logger.info(f"✅ Comandos sincronizados globalmente com sucesso. Total: {len(synced)}")
+            else:
+                msg = await ctx.send("⏳ Sincronizando comandos para **este servidor**...")
+                self.bot.tree.copy_global_to(guild=ctx.guild)
+                synced = await self.bot.tree.sync(guild=ctx.guild)
+                await msg.edit(content=f"✅ Sincronizados {len(synced)} comandos para este servidor!")
+                logger.info(f"✅ Comandos sincronizados para {ctx.guild.name} (ID: {ctx.guild.id}) com sucesso. Total: {len(synced)}")
+        except Exception as e:
+            logger.error(f"❌ Erro ao executar !sync: {e}", exc_info=True)
+            await ctx.send(f"❌ Erro ao sincronizar: {e}")
 
 
 
